@@ -76,8 +76,8 @@ Avant de commencer, assurez-vous d'avoir installé :
 
 - **Java JDK 17** ou supérieur
 - **Maven 3.6+**
-- **Node.js 18+** et **npm**
-- **PostgreSQL 12+**
+- **Node.js 20** et **npm**
+- **PostgreSQL 16**
 - **Angular CLI 19+** (optionnel, mais recommandé)
 
 ---
