@@ -1,0 +1,91 @@
+<div class="container">
+  <div class="header">
+    <button (click)="onCancel()" class="btn-back">← Retour</button>
+    <h1>{{ isEditMode ? 'Modifier le Projet' : 'Ajouter un Projet' }}</h1>
+  </div>
+
+  <!-- Message de succès -->
+  @if (successMessage) {
+    <div class="success">
+      <p>{{ successMessage }}</p>
+    </div>
+  }
+
+  <!-- Message d'erreur -->
+  @if (errorMessage) {
+    <div class="error">
+      <p>{{ errorMessage }}</p>
+    </div>
+  }
+
+  <!-- Formulaire -->
+  <div class="form-container">
+    <form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
+      
+      <!-- Nom du projet -->
+      <div class="form-group">
+        <label for="name">Nom du projet <span class="required">*</span></label>
+        <input 
+          type="text" 
+          id="name" 
+          formControlName="name" 
+          placeholder="Ex: Portfolio"
+          [class.error-input]="name?.invalid && name?.touched"
+        />
+        @if (name?.invalid && name?.touched) {
+          <div class="error-message">
+            @if (name?.errors?.['required']) {
+              <span>Le nom est requis</span>
+            }
+            @if (name?.errors?.['minlength']) {
+              <span>Le nom doit contenir au moins 3 caractères</span>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Description -->
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea 
+          id="description" 
+          formControlName="description" 
+          rows="5"
+          placeholder="Ex: Portfolio ala ben salem"
+        ></textarea>
+      </div>
+
+
+
+      <!-- Boutons d'action -->
+      <div class="form-actions">
+        <button 
+          type="button" 
+          (click)="onCancel()" 
+          class="btn-cancel"
+          [disabled]="isSubmitting"
+        >
+          Annuler
+        </button>
+        <button 
+          type="submit" 
+          class="btn-submit"
+          [disabled]="projectForm.invalid || isSubmitting"
+        >
+          @if (isSubmitting) {
+            {{ isEditMode ? 'Modification...' : 'Création...' }}
+          } @else {
+            {{ isEditMode ? 'Modifier le projet' : 'Créer le projet' }}
+          }
+        </button>
+      </div>
+
+    </form>
+
+    <!-- Exemple JSON -->
+    <div class="json-preview">
+      <h3>Aperçu des données :</h3>
+      <pre>{{ projectForm.value |json}}</pre>
+    </div>
+  </div>
+</div>

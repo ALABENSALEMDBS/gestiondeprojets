@@ -31,10 +31,10 @@ public class Task {
     @JsonIgnore
     @ManyToOne
     Project project;
-    @Transient
-    public Long getProjectId() {
-        return project != null ? project.getId() : null;
-    }
+//    @Transient
+//    public Long getProjectId() {
+//        return project != null ? project.getId() : null;
+//    }
 
 
     public Long getId() {

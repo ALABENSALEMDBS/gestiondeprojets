@@ -1,0 +1,119 @@
+<div class="container">
+  <div class="page-header">
+    <h1>Gestion de Projets</h1>
+    <a [routerLink]="['/add-project']" class="btn-add-project">
+      + Ajouter un projet
+    </a>
+  </div>
+
+  <!-- Message de succès de suppression -->
+  @if (deleteSuccessMessage) {
+    <div class="success-toast">
+      <span>✔️ {{ deleteSuccessMessage }}</span>
+    </div>
+  }
+
+  <!-- Message d'erreur de suppression -->
+  @if (deleteErrorMessage) {
+    <div class="error-toast">
+      <span>❌ {{ deleteErrorMessage }}</span>
+    </div>
+  }
+
+  <!-- Message de chargement -->
+  @if (isLoading) {
+    <div class="loading">
+      <p>Chargement des projets...</p>
+    </div>
+  }
+
+  <!-- Message d'erreur -->
+  @if (errorMessage && !isLoading) {
+    <div class="error">
+      <p>{{ errorMessage }}</p>
+      <button (click)="getProjects()">Réessayer</button>
+    </div>
+  }
+
+  <!-- Liste des projets -->
+  @if (!isLoading && !errorMessage) {
+    @if (projects.length === 0) {
+      <div class="no-data">
+        <p>Aucun projet disponible</p>
+      </div>
+    } @else {
+      <div class="projects-grid">
+        @for (project of projects; track project.id) {
+          <div class="project-card">
+            <div class="project-header">
+              <h2>{{ project.name }}</h2>
+              @if (project.createdAt) {
+                <span class="date">{{ project.createdAt | date:'dd/MM/yyyy' }}</span>
+              }
+            </div>
+            
+            @if (project.description) {
+              <p class="description">{{ project.description }}</p>
+            }
+
+            <!-- Bouton pour voir les tâches -->
+            <div class="actions">
+              <a [routerLink]="['/tasks', project.id]" class="btn-tasks">
+                les tâches
+                @if (project.tasks && project.tasks.length > 0) {
+                  <span class="badge">{{ project.tasks.length }}</span>
+                }
+              </a>
+              <a [routerLink]="['/edit-project', project.id]" class="btn-edit">
+                Modifier
+              </a>
+              <button (click)="deleteProject(project)" class="btn-delete">
+                Supprimer
+              </button>
+            </div>
+
+            <!-- Tâches du projet -->
+            @if (project.tasks && project.tasks.length > 0) {
+              <div class="tasks-section">
+                <h3>Tâches ({{ project.tasks.length }})</h3>
+                <ul class="tasks-list">
+                  @for (task of project.tasks; track task.id) {
+                    <li class="task-item">
+                      <span class="task-title">{{ task.title }}</span>
+                      <span class="task-status" [class]="'status-' + task.status">{{ task.status }}</span>
+                      @if (task.dueDate) {
+                        <span class="task-date">{{ task.dueDate | date:'dd/MM/yyyy' }}</span>
+                      }
+                    </li>
+                  }
+                </ul>
+              </div>
+            } @else {
+              <p class="no-tasks">Aucune tâche</p>
+            }
+          </div>
+        }
+      </div>
+    }
+  }
+
+  <!-- Modal de confirmation de suppression -->
+  @if (showDeleteModal) {
+    <div class="modal-overlay" (click)="closeDeleteModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>⚠️ Confirmation de suppression</h2>
+        </div>
+        <div class="modal-body">
+          <p>Êtes-vous sûr de vouloir supprimer le projet :</p>
+          <p class="project-name"><strong>{{ projectToDelete?.name }}</strong> ?</p>
+          <p class="warning">Cette action est irréversible.</p>
+        </div>
+        <div class="modal-footer">
+          <button (click)="closeDeleteModal()" class="btn-cancel-modal">Annuler</button>
+          <button (click)="confirmDelete()" class="btn-confirm-delete">Supprimer</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>
