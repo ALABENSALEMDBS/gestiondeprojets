@@ -58,6 +58,9 @@
 
             <!-- Bouton pour voir les tâches -->
             <div class="actions">
+              <a [routerLink]="['/add-task', project.id]" class="btn-add-task">
+                + Ajouter une tâche
+              </a>
               <a [routerLink]="['/tasks', project.id]" class="btn-tasks">
                 les tâches
                 @if (project.tasks && project.tasks.length > 0) {

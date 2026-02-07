@@ -1,1 +1,117 @@
-<p>task-form works!</p>
+<div class="container">
+  <div class="header">
+    <button (click)="onCancel()" class="btn-back">← Retour</button>
+    <h1>{{ isEditMode ? 'Modifier la Tâche' : 'Ajouter une Tâche' }}</h1>
+  </div>
+
+  <!-- Message de succès -->
+  @if (successMessage) {
+    <div class="success">
+      <p>{{ successMessage }}</p>
+    </div>
+  }
+
+  <!-- Message d'erreur -->
+  @if (errorMessage) {
+    <div class="error">
+      <p>{{ errorMessage }}</p>
+    </div>
+  }
+
+  <!-- Formulaire -->
+  <div class="form-container">
+    <form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+      
+      <!-- Titre de la tâche -->
+      <div class="form-group">
+        <label for="title">Titre de la tâche <span class="required">*</span></label>
+        <input 
+          type="text" 
+          id="title" 
+          formControlName="title" 
+          placeholder="Ex: Développer la page d'accueil"
+          [class.error-input]="title?.invalid && title?.touched"
+        />
+        @if (title?.invalid && title?.touched) {
+          <div class="error-message">
+            @if (title?.errors?.['required']) {
+              <span>Le titre est requis</span>
+            }
+            @if (title?.errors?.['minlength']) {
+              <span>Le titre doit contenir au moins 3 caractères</span>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Statut -->
+      <div class="form-group">
+        <label for="status">Statut <span class="required">*</span></label>
+        <select 
+          id="status" 
+          formControlName="status"
+          [class.error-input]="status?.invalid && status?.touched"
+        >
+          @for (statusOption of statusOptions; track statusOption) {
+            <option [value]="statusOption">{{ statusOption }}</option>
+          }
+        </select>
+        @if (status?.invalid && status?.touched) {
+          <div class="error-message">
+            @if (status?.errors?.['required']) {
+              <span>Le statut est requis</span>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Date d'échéance -->
+      <div class="form-group">
+        <label for="dueDate">Date d'échéance <span class="required">*</span></label>
+        <input 
+          type="date" 
+          id="dueDate" 
+          formControlName="dueDate"
+          [class.error-input]="dueDate?.invalid && dueDate?.touched"
+        />
+        @if (dueDate?.invalid && dueDate?.touched) {
+          <div class="error-message">
+            @if (dueDate?.errors?.['required']) {
+              <span>La date d'échéance est requise</span>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Boutons d'action -->
+      <div class="form-actions">
+        <button 
+          type="button" 
+          (click)="onCancel()" 
+          class="btn-cancel"
+          [disabled]="isSubmitting"
+        >
+          Annuler
+        </button>
+        <button 
+          type="submit" 
+          class="btn-submit"
+          [disabled]="taskForm.invalid || isSubmitting"
+        >
+          @if (isSubmitting) {
+            {{ isEditMode ? 'Modification...' : 'Création...' }}
+          } @else {
+            {{ isEditMode ? 'Modifier la tâche' : 'Créer la tâche' }}
+          }
+        </button>
+      </div>
+
+    </form>
+
+    <!-- Aperçu JSON -->
+    <div class="json-preview">
+      <h3>Aperçu des données :</h3>
+      <pre>{{ taskForm.value | json }}</pre>
+    </div>
+  </div>
+</div>
