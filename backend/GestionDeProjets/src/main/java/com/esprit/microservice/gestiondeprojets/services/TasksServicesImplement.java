@@ -35,6 +35,13 @@ public class TasksServicesImplement {
         return tasks;
     }
 
+    public Task getTaskById(Long id) {
+        return tasksRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Le task avec l'ID " + id + " n'existe pas"
+                ));
+    }
+
     public List<Task> getTasksByProjectId(Long projectId) {
         Project project = projectsRepository.findById(projectId)
                 .orElseThrow(() -> new ResponseStatusException(

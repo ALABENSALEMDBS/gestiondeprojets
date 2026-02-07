@@ -1,5 +1,6 @@
 package com.esprit.microservice.gestiondeprojets.controllers;
 
+import com.esprit.microservice.gestiondeprojets.entities.Project;
 import com.esprit.microservice.gestiondeprojets.entities.Task;
 import com.esprit.microservice.gestiondeprojets.entities.status;
 import com.esprit.microservice.gestiondeprojets.services.TasksServicesImplement;
@@ -33,6 +34,13 @@ public class tasksController {
             return tasksService.getTasksByStatus(status);
         }
         return tasksService.getAllTasks();
+    }
+
+    @Operation(description = "Récupérer un task par son ID")
+    @GetMapping("/tasks/{id}")
+    public Task getTaskById(@PathVariable Long id) {
+        Task task = tasksService.getTaskById(id);
+        return task;
     }
 
     @Operation(description = "Récupérer les tasks par ID de projet")

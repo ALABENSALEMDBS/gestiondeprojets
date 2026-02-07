@@ -4,6 +4,20 @@
     <h1>Tâches du Projet #{{ projectId }}</h1>
   </div>
 
+  <!-- Message de succès de suppression -->
+  @if (deleteSuccessMessage) {
+    <div class="success-toast">
+      <span>✔️ {{ deleteSuccessMessage }}</span>
+    </div>
+  }
+
+  <!-- Message d'erreur de suppression -->
+  @if (deleteErrorMessage) {
+    <div class="error-toast">
+      <span>❌ {{ deleteErrorMessage }}</span>
+    </div>
+  }
+
   <!-- Message de chargement -->
   @if (isLoading) {
     <div class="loading">
@@ -46,9 +60,41 @@
                 <span class="value">#{{ task.id }}</span>
               </div>
             </div>
+
+            <!-- Actions de la tâche -->
+            <div class="task-actions">
+              <button (click)="editTask(task)" class="btn-edit">
+                ✏️ Modifier
+              </button>
+              <button (click)="deleteTask(task)" class="btn-delete">
+                🗑️ Supprimer
+              </button>
+            </div>
           </div>
         }
       </div>
     }
+  }
+
+  <!-- Modal de confirmation de suppression -->
+  @if (showDeleteModal) {
+    <div class="modal-overlay" (click)="closeDeleteModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>⚠️ Confirmer la suppression</h2>
+        </div>
+        <div class="modal-body">
+          <p>Êtes-vous sûr de vouloir supprimer cette tâche ?</p>
+          @if (taskToDelete) {
+            <div class="task-name">{{ taskToDelete.title }}</div>
+          }
+          <p class="warning">Cette action est irréversible.</p>
+        </div>
+        <div class="modal-footer">
+          <button (click)="closeDeleteModal()" class="btn-cancel-modal">Annuler</button>
+          <button (click)="confirmDelete()" class="btn-confirm-delete">Supprimer</button>
+        </div>
+      </div>
+    </div>
   }
 </div>
