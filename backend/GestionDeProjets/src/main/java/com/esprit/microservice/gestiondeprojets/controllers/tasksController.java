@@ -13,7 +13,6 @@ import java.util.List;
 @Tag(name = "Gestion Tasks API", description = "API pour la gestion des tasks")
 @RestController
 @RequestMapping("/api")
-//@CrossOrigin(origins = "*")
 public class tasksController {
 
     private final TasksServicesImplement tasksService;

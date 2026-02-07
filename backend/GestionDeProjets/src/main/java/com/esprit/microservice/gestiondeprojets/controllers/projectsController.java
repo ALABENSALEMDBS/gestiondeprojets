@@ -17,7 +17,6 @@ import java.util.Map;
 @Tag(name = "Gestion Projets API", description = "API pour la gestion des projets")
 @RestController
 @RequestMapping("/api/projects")
-//@CrossOrigin(origins = "*")
 public class projectsController {
 
     private final ProjectsServiceImplement projectsService;
