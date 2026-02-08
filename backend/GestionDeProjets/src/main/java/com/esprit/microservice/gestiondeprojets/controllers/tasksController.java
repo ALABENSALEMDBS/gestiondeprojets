@@ -44,7 +44,10 @@ public class tasksController {
 
     @Operation(description = "Récupérer les tasks par ID de projet")
     @GetMapping("/projects/{projectId}/tasks")
-    public List<Task> getTasksByProjectId(@PathVariable Long projectId) {
+    public List<Task> getTasksByProjectId(@PathVariable Long projectId, @RequestParam(required = false) status status) {
+        if (status != null) {
+            return tasksService.getTasksByProjectIdAndStatus(projectId, status);
+        }
         return tasksService.getTasksByProjectId(projectId);
     }
 
