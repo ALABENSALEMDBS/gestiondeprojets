@@ -1,12 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Task } from '../../core/models/Task';
+import { status } from '../../core/models/status';
 import { TaskServiceService } from '../services/task-service.service';
 
 @Component({
   selector: 'app-task-list',
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './task-list.component.html',
   styleUrl: './task-list.component.css'
 })
@@ -20,6 +22,8 @@ export class TaskListComponent implements OnInit {
 
   projectId!: number;
   tasks: Task[] = [];
+  selectedFilter: string = 'ALL';
+  statusEnum = status;
   isLoading = false;
   errorMessage = '';
   
@@ -36,7 +40,17 @@ export class TaskListComponent implements OnInit {
       const id = params.get('projectId');
       if (id) {
         this.projectId = +id;
-        this.getTasks();
+        
+        // Lire le query param 'status' pour initialiser le filtre
+        this.route.queryParams.subscribe(queryParams => {
+          const statusParam = queryParams['status'];
+          if (statusParam && Object.values(status).includes(statusParam as status)) {
+            this.selectedFilter = statusParam;
+          } else {
+            this.selectedFilter = 'ALL';
+          }
+          this.getTasks();
+        });
       }
     });
   }
@@ -45,7 +59,10 @@ export class TaskListComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
 
-    this.taskService.getTasksByProjectId(this.projectId).subscribe({
+    // Si le filtre est 'ALL', ne pas passer de status, sinon passer le status sélectionné
+    const statusFilter = this.selectedFilter === 'ALL' ? undefined : this.selectedFilter as status;
+    
+    this.taskService.getTasksByProjectId(this.projectId, statusFilter).subscribe({
       next: (tasksData) => {
         this.tasks = tasksData;
         this.isLoading = false;
@@ -56,6 +73,25 @@ export class TaskListComponent implements OnInit {
         console.error('Erreur:', error);
       }
     });
+  }
+
+  onFilterChange(): void {
+    // Mettre à jour l'URL avec le query param
+    if (this.selectedFilter === 'ALL') {
+      // Supprimer tous les query params
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: {}
+      });
+    } else {
+      // Ajouter le query param status
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { status: this.selectedFilter }
+      });
+    }
+    
+    this.getTasks();
   }
 
   goBack(): void {

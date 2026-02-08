@@ -4,6 +4,17 @@
     <h1>Tâches du Projet #{{ projectId }}</h1>
   </div>
 
+  <!-- Filtre par statut -->
+  <div class="filter-container">
+    <label for="statusFilter">Filtrer par statut:</label>
+    <select id="statusFilter" [(ngModel)]="selectedFilter" (change)="onFilterChange()" class="filter-select">
+      <option value="ALL">Tous</option>
+      <option [value]="statusEnum.TODO">À faire</option>
+      <option [value]="statusEnum.IN_PROGRESS">En cours</option>
+      <option [value]="statusEnum.DONE">Terminé</option>
+    </select>
+  </div>
+
   <!-- Message de succès de suppression -->
   @if (deleteSuccessMessage) {
     <div class="success-toast">
@@ -37,7 +48,11 @@
   @if (!isLoading && !errorMessage) {
     @if (tasks.length === 0) {
       <div class="no-data">
-        <p>Aucune tâche disponible pour ce projet</p>
+        @if (selectedFilter === 'ALL') {
+          <p>Aucune tâche disponible pour ce projet</p>
+        } @else {
+          <p>Aucune tâche ne correspond au filtre  sélectionné</p>
+        }
       </div>
     } @else {
       <div class="tasks-container">

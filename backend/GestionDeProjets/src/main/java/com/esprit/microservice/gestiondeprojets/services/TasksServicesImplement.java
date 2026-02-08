@@ -76,4 +76,13 @@ public class TasksServicesImplement {
     public List<Task> getTasksByStatus(status status) {
         return tasksRepository.findByStatus(status);
     }
+
+    //bonus : get tasks by projectId and status
+    public List<Task> getTasksByProjectIdAndStatus(Long projectId, status status) {
+        Project project = projectsRepository.findById(projectId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Le projet avec l'ID " + projectId + " n'existe pas"
+                ));
+        return tasksRepository.findByProject_IdAndStatus(projectId, status);
+    }
 }
